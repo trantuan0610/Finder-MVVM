@@ -19,6 +19,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
 
     private var listFragment = mutableListOf<Fragment>()
     private var currentPosition = 0
+    private var isFragmentAdded = false
 
     override fun layoutRes(): Int = R.layout.fragment_main
 
@@ -32,14 +33,17 @@ class MainFragment : BaseFragment<FragmentMainBinding, MainFragmentViewModel>() 
 
         val fragmentTransaction = childFragmentManager.beginTransaction()
         listFragment.forEachIndexed { index, fragment ->
-            fragmentTransaction.add(R.id.frame_layout, fragment, fragment.javaClass.simpleName)
-            if (index != 0) {
-                fragmentTransaction.hide(fragment)
-            } else {
-                fragmentTransaction.show(fragment)
+            if (!isFragmentAdded) {
+                fragmentTransaction.add(R.id.frame_layout, fragment, fragment.javaClass.simpleName)
+                if (index != 0) {
+                    fragmentTransaction.hide(fragment)
+                } else {
+                    fragmentTransaction.show(fragment)
+                }
             }
         }
         fragmentTransaction.commitAllowingStateLoss()
+        isFragmentAdded = true
         binding.buttonNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
